@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+      - /traefik/acme:/etc/traefik/acme
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+    command: --entryPoints='Name:http Address::80 Redirect.EntryPoint:https' --entryPoints='Name:https Address::443 TLS' --defaultEntryPoints=http,https --acme.entryPoint=https --acme.email=email@email.com --acme.storage=/etc/traefik/acme/acme.json --acme.OnHostRule=true --docker --docker.swarmmode --docker.domain=docker.localhost --docker.watch --web
+
+networks:
+  traefik:
+    external: true

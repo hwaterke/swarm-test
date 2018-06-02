@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  color:
+    image: hwaterke/color:1
+    networks:
+      - traefik
+    deploy:
+        labels:
+          traefik.port: 3000
+          traefik.backend: color
+          traefik.frontend.rule: Host:color.harold.cloud
+
+networks:
+  traefik:
+    external: true

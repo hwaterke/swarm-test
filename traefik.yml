@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    command:
+      --docker --docker.swarmmode --docker.domain=traefik --docker.watch --web
+
+networks:
+  traefik:
+    external: true
